@@ -9,7 +9,7 @@ Glideable is a React component that adds enhanced draggable behavior to child el
   * Methods for reset-all and reset-individual
 
 ### Learn more
-See the demo at [http://www.uismithing.com/main/glideable](http://www.uismithing.com/main/glideable).
+See the demo at [http://www.uismithing.com/main/wares/glideable](http://www.uismithing.com/main/wares/glideable).
 
 ### Repository
 [https://github.com/uismithing/react-glideable](https://github.com/uismithing/react-glideable)
