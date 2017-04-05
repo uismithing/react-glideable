@@ -5,12 +5,13 @@ import {Panel, Button} from "react-bootstrap";
 import Highlight from "react-syntax-highlight";
 import Glideable from "react-glideable";
 //
-import {fetchGlideableHtml} from "../actions/actions";
-import {fetchGlideablePropsexampleJs} from "../actions/actions";
-import {fetchGlideableMethodsexampleJs} from "../actions/actions";
-import {fetchGlideablePropsDemoexampleJson} from "../actions/actions";
-import {fetchGlideableCssDemoexampleCss} from "../actions/actions";
-import {fetchGlideableDeployexampleHtml} from "../actions/actions";
+import {fetchGlideableHtml} from "../actions/actions_glideable-landing";
+import {fetchGlideablePropsexampleJs} from "../actions/actions_glideable-landing";
+import {fetchGlideableMethodsexampleJs} from "../actions/actions_glideable-landing";
+import {fetchGlideablePropsDemoexampleJson} from "../actions/actions_glideable-landing";
+import {fetchGlideableCssDemoexampleCss} from "../actions/actions_glideable-landing";
+import {fetchGlideableDeployexampleHtml} from "../actions/actions_glideable-landing";
+//
 import BackgroundCanvas from "../components/background-canvas";
 import {updateState} from "../toolbox/toolbox";
 import ReactGA from "react-ga";
@@ -24,10 +25,6 @@ class GlideableLanding extends Component
 	constructor(props)
 	{
 	    super(props);
-	}
-	getChildContext()
-	{
-		// empty
 	}
 	getInitialState()
 	{
@@ -50,34 +47,28 @@ class GlideableLanding extends Component
 	{
 		let scopeProxy
 			= this;
-		let setViewLoaded
-			= scopeProxy.context.setViewLoaded;
-		let setLayoutMode
-			= scopeProxy.context.setLayoutMode;
-		let updateNavigationState
-			= scopeProxy.context.updateNavigationState;
 		let navigationSection
 			= 0;
 		//
 		window.requestAnimationFrame(()=>
 		{
-			// Updating the section index this way lets the
-			// state of the nagigation cluster fully initialize
-			// before the activeKey value is updated. This is
-			// necessary for it to be possible to navigate
-			// back to the wares section from within a component
-			// landing page when the component landing page is
-			// directly accessed via the url bar in the browser.
-			updateNavigationState(navigationSection);
+			let updateNavigationState
+				= scopeProxy.props.updateNavigationstateAction;
+			let setViewLoaded
+				= scopeProxy.props.setViewLoadedAction;
+			let setLayoutMode
+				= scopeProxy.props.setLayoutModeAction;
+			//
+			let setviewTimeout =
+				setTimeout(function()
+				{
+					setViewLoaded(true);
+					setLayoutMode("full");
+					updateNavigationState(navigationSection);
+				},
+				500);
+			//
 		});
-		let setviewTimeout =
-			setTimeout(function()
-			{
-				setViewLoaded(true);
-				setLayoutMode("full");
-			},
-			500);
-		//
 		this.addListeners();
 		//
 		updateState(scopeProxy,
@@ -342,27 +333,22 @@ class GlideableLanding extends Component
 		}
 	//
 }
-function mapAxiosstateToReactprops(axiosState)
+function mapReduxstateToProps(reduxState)
 {
-	// This function is only called when the axios
-	// response updates the application state. Once
-	// this function is called, the component state
-	// is updated which causes the render() function
-	// to execute.
 	return(
 	{
-		// When the application state (state.posts.all) is
-		// updated by the axios promise, the promise response
-		// is assigned the component state this.content.posts.
-		"html":axiosState.content.html,
-		"glideablePropsexampleJs":axiosState.content.glideablePropsexampleJs,
-		"glideableMethodsexampleJs":axiosState.content.glideableMethodsexampleJs,
-		"glideablePropsDemoexampleJson":axiosState.content.glideablePropsDemoexampleJson,
-		"glideableCssDemoexampleCss":axiosState.content.glideableCssDemoexampleCss,
-		"glideableDeployexampleHtml":axiosState.content.glideableDeployexampleHtml
+		"html":reduxState.glideableReducer.html,
+		"glideablePropsexampleJs":reduxState.glideableReducer.glideablePropsexampleJs,
+		"glideableMethodsexampleJs":reduxState.glideableReducer.glideableMethodsexampleJs,
+		"glideablePropsDemoexampleJson":reduxState.glideableReducer.glideablePropsDemoexampleJson,
+		"glideableCssDemoexampleCss":reduxState.glideableReducer.glideableCssDemoexampleCss,
+		"glideableDeployexampleHtml":reduxState.glideableReducer.glideableDeployexampleHtml,
+		"setViewLoadedAction":reduxState.mainReducer.setViewloadedAction,
+		"setLayoutModeAction":reduxState.mainReducer.setLayoutmodeAction,
+		"updateNavigationstateAction":reduxState.navigationReducer.updateNavigationstateAction
 	});
 }
-export default connect(mapAxiosstateToReactprops,
+export default connect(mapReduxstateToProps,
 {
 	"fetchGlideableHtml":fetchGlideableHtml,
 	"fetchGlideablePropsexampleJs":fetchGlideablePropsexampleJs,
